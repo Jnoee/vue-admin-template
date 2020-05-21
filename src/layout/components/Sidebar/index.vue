@@ -3,6 +3,7 @@
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
+        :default-openeds="openeds"
         :default-active="activeMenu"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
@@ -31,7 +32,9 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      return this.$router.options.routes.filter(route => {
+        return route.hidden || (route.meta !== undefined && route.meta.module === this.$store.state.app.module)
+      })
     },
     activeMenu() {
       const route = this.$route
@@ -50,6 +53,11 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    },
+    openeds() {
+      return this.$router.options.routes.filter(route => {
+        return route.hidden || (route.meta !== undefined && route.meta.module === this.$store.state.app.module)
+      }).map(route => route.path)
     }
   }
 }
